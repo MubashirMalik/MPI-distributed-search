@@ -1,2 +1,6 @@
-# MPI-distributed-search
-Code to search a number from a large list of numbers using distributed systems(cluster), OpenMP and MPI Programming without using asynchronous send/receive calls.
+# Distributed Search - Problem Statement
+The process ranked 0 (let’s call it master and not to be confused with the machine named master) initializes and distributes a large list of numbers amongst other processes (let’s call them slaves). The list size and distribution depend on the number of slave processes and each one is assigned an equal share of the numbers to be searched.
+
+The master process then waits for the slave processes to search and report back. Each slave process is doing the similar tasks. First, it is comparing each number in the chunk assigned to the number being searched and secondly at the same time, the slave process is waiting for the abort message from the master process (in case any other process finds the number). For the first case, if the process finds the number, it breaks the search and sends a message to the master that it has found the number. The master process is waiting for exactly this message, it then notifies all the other processes to abort the search.
+
+The important thing here is that a slave processes should abort the search as soon as the abort message is received from the master process. For example, if a process is busy searching 100k numbers and have say searched 5 as yet, and if it receives the abort message it should abort searching immediately rather than the complete the search within 100k numbers.
